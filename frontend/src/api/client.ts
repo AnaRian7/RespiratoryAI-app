@@ -2,7 +2,7 @@ import axios from 'axios'
 import type { PredictionResult, FusionPredictionResult, HistoryResponse, HealthStatus, RiskFactors } from '../types'
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: 'https://railway.com/project/8d492a50-fab8-49d5-a409-28fabe4598e1/service/d88eeeee-0142-48cc-b8e9-1690e950b8e9?environmentId=53b8d017-6215-4a37-8e9f-d3fe15918591',
   timeout: 60000,
 })
 
@@ -58,3 +58,4 @@ export function getGradcamUrl(filename: string): string {
 }
 
 export default api
+
