@@ -12,7 +12,7 @@ const diseaseIcons: Record<DiseaseClass, typeof CheckCircle> = {
   TUBERCULOSIS: AlertCircle,
 }
 
-const diseaseColors: Record<DiseaseClass, string> = {
+const _DISEASE_COLORS: Record<DiseaseClass, string> = {
   COVID: 'text-red-500 bg-red-50 border-red-200',
   NORMAL: 'text-green-500 bg-green-50 border-green-200',
   PNEUMONIA: 'text-amber-500 bg-amber-50 border-amber-200',
@@ -111,3 +111,4 @@ export default function PredictionResult({ result }: PredictionResultProps) {
     </div>
   )
 }
+
