@@ -1,4 +1,4 @@
-import { Brain, Database, Shield, Zap, Github, ExternalLink } from 'lucide-react'
+import { Info } from 'lucide-react'
 
 const features = [
   {
@@ -137,3 +137,4 @@ export default function AboutPage() {
     </div>
   )
 }
+
