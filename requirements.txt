@@ -23,3 +23,7 @@ kaggle>=1.5.0
 
 # Development
 python-dotenv>=1.0.0
+
+#Libraries
+requests>=2.31.0
+
