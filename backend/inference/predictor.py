@@ -19,17 +19,16 @@ import requests
 from backend.config import settings
 from backend.inference.gradcam import GradCAM
 
+
 def ensure_image_model_present() -> None:
     """Download the image model from remote storage if it's missing."""
     model_path = Path(settings.IMAGE_MODEL_PATH)
 
-    # Already present or no URL configured
     if model_path.exists() or not settings.IMAGE_MODEL_URL:
         return
 
     model_path.parent.mkdir(parents=True, exist_ok=True)
     print(f"Downloading image model from {settings.IMAGE_MODEL_URL}...")
-
     resp = requests.get(settings.IMAGE_MODEL_URL, stream=True)
     resp.raise_for_status()
 
@@ -38,7 +37,8 @@ def ensure_image_model_present() -> None:
             if chunk:
                 f.write(chunk)
 
-    print(f"Saved model to {model_path}")
+    print(f"Saved image model to {model_path}")
+
 
 def ensure_risk_model_present() -> None:
     """Download the risk model from remote storage if it's missing."""
@@ -82,12 +82,12 @@ def ensure_fusion_model_present() -> None:
 
 class ModelLoader:
     """Lazy model loader with caching."""
-    
+
     _image_model = None
     _risk_model = None
     _fusion_model = None
     _gradcam = None
-    
+
     @classmethod
     def get_image_model(cls) -> tf.keras.Model:
         if cls._image_model is None:
@@ -98,9 +98,9 @@ class ModelLoader:
                     f"Image model not found at {model_path}. "
                     "Train the model locally or configure IMAGE_MODEL_URL."
                 )
-             cls._image_model = tf.keras.models.load_model(str(model_path))
-         return cls._image_model
-    
+            cls._image_model = tf.keras.models.load_model(str(model_path))
+        return cls._image_model
+
     @classmethod
     def get_risk_model(cls) -> tf.keras.Model:
         if cls._risk_model is None:
@@ -112,8 +112,8 @@ class ModelLoader:
                     "Train locally or configure RISK_MODEL_URL."
                 )
             cls._risk_model = tf.keras.models.load_model(str(model_path))
-         return cls._risk_model
-    
+        return cls._risk_model
+
     @classmethod
     def get_fusion_model(cls) -> tf.keras.Model:
         if cls._fusion_model is None:
@@ -383,5 +383,6 @@ def predict_fusion(
         result["gradcam_filename"] = gradcam_filename
     
     return result
+
 
 
