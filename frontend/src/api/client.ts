@@ -1,8 +1,16 @@
 import axios from 'axios'
-import type { PredictionResult, FusionPredictionResult, HistoryResponse, HealthStatus, RiskFactors } from '../types'
+import type {
+  PredictionResult,
+  FusionPredictionResult,
+  HistoryResponse,
+  HealthStatus,
+  RiskFactors,
+} from '../types'
+
+const BACKEND_URL = 'https://respiratoryai-app-production.up.railway.app'
 
 const api = axios.create({
-  baseURL: 'https://railway.com/project/8d492a50-fab8-49d5-a409-28fabe4598e1/service/d88eeeee-0142-48cc-b8e9-1690e950b8e9?environmentId=53b8d017-6215-4a37-8e9f-d3fe15918591',
+  baseURL: `${BACKEND_URL}/api`,
   timeout: 60000,
 })
 
@@ -54,8 +62,7 @@ export async function getHealth(): Promise<HealthStatus> {
 }
 
 export function getGradcamUrl(filename: string): string {
-  return `/api/gradcam/${filename}`
+  return `${BACKEND_URL}/api/gradcam/${filename}`
 }
 
 export default api
-
