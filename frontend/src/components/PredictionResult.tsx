@@ -1,5 +1,5 @@
 import { CheckCircle, AlertTriangle, AlertCircle, Activity } from 'lucide-react'
-import type { PredictionResult as PredictionResultType, DiseaseClass, DISEASE_COLORS } from '../types'
+import type { PredictionResult as PredictionResultType, DiseaseClass } from '../types'
 
 interface PredictionResultProps {
   result: PredictionResultType
@@ -111,4 +111,5 @@ export default function PredictionResult({ result }: PredictionResultProps) {
     </div>
   )
 }
+
 
