@@ -22,9 +22,24 @@ class Settings:
     RISK_MODEL_PATH = str(MODELS_DIR / "risk_model.keras")
     FUSION_MODEL_PATH = str(MODELS_DIR / "fusion_model.keras")
 
+    # ✅ NEW: remote model URLs (Hugging Face)
+    IMAGE_MODEL_URL = os.getenv(
+        "IMAGE_MODEL_URL",
+        "https://huggingface.co/Ana7Rian/respiratoryai-image-model/resolve/main/resnet50v2_xray.keras",
+    )
+    RISK_MODEL_URL = os.getenv(
+        "RISK_MODEL_URL",
+        "https://huggingface.co/Ana7Rian/respiratoryai-image-model/resolve/main/risk_model.keras",
+    )
+    FUSION_MODEL_URL = os.getenv(
+        "FUSION_MODEL_URL",
+        "https://huggingface.co/Ana7Rian/respiratoryai-image-model/resolve/main/fusion_model.keras",
+    )
+
     # ------------------ UPLOADS ------------------
     UPLOADS_DIR = PROJECT_ROOT / "uploads"
     GRADCAM_DIR = PROJECT_ROOT / "gradcam_outputs"
+    
 
     # ------------------ IMAGE SETTINGS ------------------
     IMAGE_SIZE = (224, 224)
@@ -77,5 +92,6 @@ class Settings:
 
 settings = Settings()
 settings.ensure_dirs()
+
 
 
