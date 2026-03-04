@@ -29,7 +29,7 @@ const barColors: Record<DiseaseClass, string> = {
 export default function PredictionResult({ result }: PredictionResultProps) {
   const predictedClass = result.predicted_class as DiseaseClass
   const Icon = diseaseIcons[predictedClass]
-  const colorClasses = diseaseColors[predictedClass]
+  const colorClasses = _DISEASE_COLORS[predictedClass]
 
   const sortedProbabilities = Object.entries(result.probabilities).sort(
     ([, a], [, b]) => b - a
@@ -111,5 +111,6 @@ export default function PredictionResult({ result }: PredictionResultProps) {
     </div>
   )
 }
+
 
 
