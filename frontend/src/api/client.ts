@@ -14,6 +14,9 @@ const api = axios.create({
   timeout: 60000,
 })
 
+export function getGradcamUrl(filename: string): string {
+  return `${BACKEND_URL}/api/gradcam/${filename}`
+}
 export async function predictImage(file: File): Promise<PredictionResult> {
   const formData = new FormData()
   formData.append('file', file)
@@ -66,3 +69,4 @@ export function getGradcamUrl(filename: string): string {
 }
 
 export default api
+
