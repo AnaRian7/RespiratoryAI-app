@@ -12,7 +12,7 @@ const diseaseIcons: Record<DiseaseClass, typeof CheckCircle> = {
   TUBERCULOSIS: AlertCircle,
 }
 
-const _DISEASE_COLORS: Record<DiseaseClass, string> = {
+const diseaseColors: Record<DiseaseClass, string> = {
   COVID: 'text-red-500 bg-red-50 border-red-200',
   NORMAL: 'text-green-500 bg-green-50 border-green-200',
   PNEUMONIA: 'text-amber-500 bg-amber-50 border-amber-200',
@@ -29,7 +29,7 @@ const barColors: Record<DiseaseClass, string> = {
 export default function PredictionResult({ result }: PredictionResultProps) {
   const predictedClass = result.predicted_class as DiseaseClass
   const Icon = diseaseIcons[predictedClass]
-  const colorClasses = _DISEASE_COLORS[predictedClass]
+  const colorClasses = diseaseColors[predictedClass]
 
   const sortedProbabilities = Object.entries(result.probabilities).sort(
     ([, a], [, b]) => b - a
@@ -111,6 +111,7 @@ export default function PredictionResult({ result }: PredictionResultProps) {
     </div>
   )
 }
+
 
 
 
