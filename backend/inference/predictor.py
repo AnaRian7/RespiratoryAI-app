@@ -40,6 +40,45 @@ def ensure_image_model_present() -> None:
 
     print(f"Saved model to {model_path}")
 
+def ensure_risk_model_present() -> None:
+    """Download the risk model from remote storage if it's missing."""
+    model_path = Path(settings.RISK_MODEL_PATH)
+
+    if model_path.exists() or not settings.RISK_MODEL_URL:
+        return
+
+    model_path.parent.mkdir(parents=True, exist_ok=True)
+    print(f"Downloading risk model from {settings.RISK_MODEL_URL}...")
+    resp = requests.get(settings.RISK_MODEL_URL, stream=True)
+    resp.raise_for_status()
+
+    with open(model_path, "wb") as f:
+        for chunk in resp.iter_content(chunk_size=8192):
+            if chunk:
+                f.write(chunk)
+
+    print(f"Saved risk model to {model_path}")
+
+
+def ensure_fusion_model_present() -> None:
+    """Download the fusion model from remote storage if it's missing."""
+    model_path = Path(settings.FUSION_MODEL_PATH)
+
+    if model_path.exists() or not settings.FUSION_MODEL_URL:
+        return
+
+    model_path.parent.mkdir(parents=True, exist_ok=True)
+    print(f"Downloading fusion model from {settings.FUSION_MODEL_URL}...")
+    resp = requests.get(settings.FUSION_MODEL_URL, stream=True)
+    resp.raise_for_status()
+
+    with open(model_path, "wb") as f:
+        for chunk in resp.iter_content(chunk_size=8192):
+            if chunk:
+                f.write(chunk)
+
+    print(f"Saved fusion model to {model_path}")
+
 
 class ModelLoader:
     """Lazy model loader with caching."""
@@ -66,17 +105,25 @@ class ModelLoader:
     def get_risk_model(cls) -> tf.keras.Model:
         if cls._risk_model is None:
             model_path = Path(settings.RISK_MODEL_PATH)
+            ensure_risk_model_present()
             if not model_path.exists():
-                raise FileNotFoundError(f"Risk model not found at {model_path}")
+                raise FileNotFoundError(
+                    f"Risk model not found at {model_path}. "
+                    "Train locally or configure RISK_MODEL_URL."
+                )
             cls._risk_model = tf.keras.models.load_model(str(model_path))
-        return cls._risk_model
+         return cls._risk_model
     
     @classmethod
     def get_fusion_model(cls) -> tf.keras.Model:
         if cls._fusion_model is None:
             model_path = Path(settings.FUSION_MODEL_PATH)
+            ensure_fusion_model_present()
             if not model_path.exists():
-                raise FileNotFoundError(f"Fusion model not found at {model_path}")
+                raise FileNotFoundError(
+                    f"Fusion model not found at {model_path}. "
+                    "Train locally or configure FUSION_MODEL_URL."
+                )
             cls._fusion_model = tf.keras.models.load_model(str(model_path))
         return cls._fusion_model
     
@@ -336,4 +383,5 @@ def predict_fusion(
         result["gradcam_filename"] = gradcam_filename
     
     return result
+
 
