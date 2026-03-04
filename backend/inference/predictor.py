@@ -14,9 +14,31 @@ from PIL import Image
 from typing import Optional
 import uuid
 from datetime import datetime
+import requests
 
 from backend.config import settings
 from backend.inference.gradcam import GradCAM
+
+def ensure_image_model_present() -> None:
+    """Download the image model from remote storage if it's missing."""
+    model_path = Path(settings.IMAGE_MODEL_PATH)
+
+    # Already present or no URL configured
+    if model_path.exists() or not settings.IMAGE_MODEL_URL:
+        return
+
+    model_path.parent.mkdir(parents=True, exist_ok=True)
+    print(f"Downloading image model from {settings.IMAGE_MODEL_URL}...")
+
+    resp = requests.get(settings.IMAGE_MODEL_URL, stream=True)
+    resp.raise_for_status()
+
+    with open(model_path, "wb") as f:
+        for chunk in resp.iter_content(chunk_size=8192):
+            if chunk:
+                f.write(chunk)
+
+    print(f"Saved model to {model_path}")
 
 
 class ModelLoader:
@@ -31,13 +53,14 @@ class ModelLoader:
     def get_image_model(cls) -> tf.keras.Model:
         if cls._image_model is None:
             model_path = Path(settings.IMAGE_MODEL_PATH)
+            ensure_image_model_present()
             if not model_path.exists():
                 raise FileNotFoundError(
                     f"Image model not found at {model_path}. "
-                    "Train the model first: python -m backend.training.train"
+                    "Train the model locally or configure IMAGE_MODEL_URL."
                 )
-            cls._image_model = tf.keras.models.load_model(str(model_path))
-        return cls._image_model
+             cls._image_model = tf.keras.models.load_model(str(model_path))
+         return cls._image_model
     
     @classmethod
     def get_risk_model(cls) -> tf.keras.Model:
@@ -313,3 +336,4 @@ def predict_fusion(
         result["gradcam_filename"] = gradcam_filename
     
     return result
+
