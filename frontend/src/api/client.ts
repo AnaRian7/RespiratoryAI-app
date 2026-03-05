@@ -7,7 +7,7 @@ import type {
   RiskFactors,
 } from '../types'
 
-const BACKEND_URL = 'https://respiratoryai-app-production.up.railway.app'
+const BACKEND_URL = 'https://huggingface.co/spaces/Ana7Rian/respiratoryai-api'
 
 const api = axios.create({
   baseURL: `${BACKEND_URL}/api`,
@@ -68,6 +68,7 @@ export function getGradcamUrl(filename: string): string {
 }
 
 export default api
+
 
 
 
