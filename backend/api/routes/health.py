@@ -26,8 +26,6 @@ async def health_check():
     """
     models_loaded = {
         "image_model": Path(settings.IMAGE_MODEL_PATH).exists(),
-        "risk_model": Path(settings.RISK_MODEL_PATH).exists(),
-        "fusion_model": Path(settings.FUSION_MODEL_PATH).exists()
     }
     
     all_critical_loaded = models_loaded["image_model"]
@@ -47,8 +45,8 @@ async def model_info():
     model_exists = Path(settings.IMAGE_MODEL_PATH).exists()
     
     info = ModelInfoResponse(
-        name="ResNet50V2_ChestXray",
-        architecture="ResNet50V2 + Custom Head",
+        name="ResNet50_ChestXray",
+        architecture="ResNet-50 + custom classification head",
         input_shape=[*settings.IMAGE_SIZE, 3],
         num_classes=settings.NUM_CLASSES,
         classes=settings.CLASSES,
@@ -63,7 +61,7 @@ async def model_info():
                 tf.keras.backend.count_params(w) 
                 for w in model.trainable_weights
             ])
-            info.trainable_params = trainable
+            info.trainable_params = int(trainable)
         except Exception:
             pass
     

@@ -126,13 +126,13 @@ class ModelLoader:
                 )
             cls._fusion_model = tf.keras.models.load_model(str(model_path))
         return cls._fusion_model
-    
+
     @classmethod
     def get_gradcam(cls) -> GradCAM:
         if cls._gradcam is None:
             cls._gradcam = GradCAM(cls.get_image_model())
         return cls._gradcam
-    
+
     @classmethod
     def reload_models(cls):
         """Force reload all models (useful after retraining)."""
@@ -383,6 +383,3 @@ def predict_fusion(
         result["gradcam_filename"] = gradcam_filename
     
     return result
-
-
-

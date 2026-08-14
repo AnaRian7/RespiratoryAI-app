@@ -2,175 +2,107 @@
 
 AI-powered respiratory disease detection from chest X-ray images using deep learning.
 
+Paper: *Respiratory Disease Detection and Classification using Deep Learning* (ICAIEHS 2025).
+
 ## Overview
 
-RespiratoryAI is an end-to-end system that uses a ResNet50V2-based convolutional neural network to classify chest X-ray images into four categories:
+RespiratoryAI classifies chest X-rays into four classes with a ResNet-50 CNN and Grad-CAM explainability:
 
-- **COVID-19** - SARS-CoV-2 infection patterns
-- **Normal** - Healthy chest X-ray
-- **Pneumonia** - Bacterial or viral pneumonia
-- **Tuberculosis** - TB infection patterns
+- **COVID-19**
+- **Normal**
+- **Pneumonia**
+- **Tuberculosis**
+
+The deployed app follows the paper pipeline: upload an X-ray in the web UI → preprocess (224×224) → ResNet-50 classification → Grad-CAM heatmap → diagnostic report.
 
 ## Features
 
-- **ResNet50V2 Architecture**: State-of-the-art deep learning model pre-trained on ImageNet
-- **Grad-CAM Explainability**: Visual heatmaps showing model focus areas
-- **Multi-Modal Fusion**: Combine X-ray analysis with patient risk factors
-- **Modern Web Interface**: React + Tailwind CSS frontend
-- **REST API**: FastAPI backend with comprehensive endpoints
-- **Docker Ready**: Containerized for easy cloud deployment
+- **ResNet-50**: residual CNN, ImageNet initialization, 4-class softmax
+- **Grad-CAM**: heatmap of regions that influenced the prediction
+- **Web interface**: upload, confidence scores, and prediction history
+- **REST API**: FastAPI (`/api/predict`, `/api/gradcam`, `/api/history`, `/api/health`)
+- **Docker**: single container serving the UI and API
 
-## Project Structure
-
-```
-RespiratoryAI/
-├── backend/
-│   ├── api/                    # API routes
-│   │   └── routes/
-│   │       ├── predict.py      # Prediction endpoints
-│   │       ├── gradcam.py      # Explainability endpoints
-│   │       ├── history.py      # History endpoints
-│   │       └── health.py       # Health check
-│   ├── models/
-│   │   ├── image_model.py      # ResNet50V2 classifier
-│   │   ├── risk_model.py       # Tabular risk model
-│   │   └── fusion_model.py     # Combined model
-│   ├── inference/
-│   │   ├── predictor.py        # Inference pipeline
-│   │   └── gradcam.py          # Grad-CAM visualization
-│   ├── preprocessing/
-│   │   └── image.py            # Image data generators
-│   ├── datasets/
-│   │   ├── download.py         # Kaggle dataset downloader
-│   │   └── harmonize.py        # Data consolidation
-│   ├── training/
-│   │   └── train.py            # Training pipeline
-│   ├── config.py               # Configuration
-│   └── app.py                  # FastAPI application
-├── frontend/
-│   ├── src/
-│   │   ├── components/         # React components
-│   │   ├── pages/              # Page components
-│   │   ├── api/                # API client
-│   │   └── types/              # TypeScript types
-│   └── package.json
-├── data/                       # Datasets
-├── saved_models/               # Trained models
-├── Dockerfile
-├── docker-compose.yml
-└── requirements.txt
-```
-
-## Quick Start
+## Quick Start (local)
 
 ### Prerequisites
 
 - Python 3.10+
 - Node.js 18+
-- Kaggle API credentials (for dataset download)
 
-### 1. Clone and Setup
+### 1. Backend
 
 ```bash
-# Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install Python dependencies
+venv\Scripts\activate
 pip install -r requirements.txt
+uvicorn backend.app:app --host 0.0.0.0 --port 8000
+```
 
-# Install frontend dependencies
+### 2. Frontend (development)
+
+```bash
 cd frontend
 npm install
-cd ..
-```
-
-### 2. Download Datasets
-
-```bash
-# Configure Kaggle API (place kaggle.json in ~/.kaggle/)
-python -m backend.datasets.download --all
-```
-
-### 3. Harmonize Data
-
-```bash
-python -m backend.datasets.harmonize
-```
-
-### 4. Train the Model
-
-```bash
-python -m backend.training.train --model image
-```
-
-### 5. Run the Application
-
-**Backend:**
-```bash
-uvicorn backend.app:app --reload
-```
-
-**Frontend (in another terminal):**
-```bash
-cd frontend
 npm run dev
 ```
 
-Open http://localhost:3000 in your browser.
+Open http://localhost:3000. Vite proxies `/api` to the backend on port 8000.
+
+### 3. Single-app deploy (UI + API on port 8000)
+
+```bash
+cd frontend
+npm install
+npm run build
+cd ..
+uvicorn backend.app:app --host 0.0.0.0 --port 8000
+```
+
+Open http://localhost:8000
+
+## Docker
+
+Requires the trained weights in `saved_models/resnet50v2_xray.keras`.
+
+```bash
+docker compose up --build
+```
+
+Open http://localhost:8000
 
 ## API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `POST` | `/api/predict` | Predict from X-ray image |
-| `POST` | `/api/predict/full` | Predict with risk factors |
 | `GET` | `/api/history` | List prediction history |
 | `GET` | `/api/history/{id}` | Get prediction details |
 | `GET` | `/api/gradcam/{filename}` | Get Grad-CAM image |
 | `GET` | `/api/health` | Health check |
 | `GET` | `/api/model/info` | Model information |
 
-API documentation available at http://localhost:8000/docs
+API docs: http://localhost:8000/docs
 
-## Docker Deployment
+## Training
 
 ```bash
-# Build and run
-docker-compose up --build
-
-# Or build only
-docker build -t respiratory-ai .
-docker run -p 8000:8000 respiratory-ai
+python -m backend.datasets.download --all
+python -m backend.datasets.harmonize
+python -m backend.training.train --model image
 ```
 
-## Training Details
-
-### Model Architecture
-
-- **Base**: ResNet50V2 (pre-trained on ImageNet)
+- **Base**: ResNet-50 (pre-trained on ImageNet)
 - **Head**: GlobalAveragePooling2D → BatchNorm → Dropout(0.5) → Dense(256) → BatchNorm → Dropout(0.3) → Dense(4, softmax)
-- **Input**: 224 × 224 × 3 RGB images
-- **Output**: 4-class probability distribution
-
-### Training Configuration
-
-- Optimizer: Adam (lr=1e-4)
-- Loss: Categorical Cross-Entropy
-- Batch Size: 16
-- Epochs: 20 (with early stopping)
-- Data Augmentation: Rotation, zoom, horizontal flip
-- Class Weighting: Balanced for handling class imbalance
-
-### Datasets
-
-- COVID-19 Radiography Database
-- Tuberculosis Chest X-ray Dataset
-- Chest X-ray Images (Pneumonia)
+- **Input**: 224 × 224 × 3
+- **Loss**: categorical cross-entropy
+- **Optimizer**: Adam (lr=1e-4)
+- **Augmentation**: rotation, zoom, horizontal flip
+- **Class weights**: balanced
 
 ## Disclaimer
 
-This tool is for **research and educational purposes only**. It is not intended to be used as a medical diagnostic device and should not replace professional medical advice, diagnosis, or treatment.
+This tool is for **research and educational purposes only**. It is not a medical device and must not replace professional medical advice, diagnosis, or treatment.
 
 ## License
 

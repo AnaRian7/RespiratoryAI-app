@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+.env
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Data and models (mount as volumes instead)
+data/
+saved_models/
+uploads/
+gradcam_outputs/
+
+# Test and docs
+tests/
+*.md
+!README.md
+
+# Jupyter
+*.ipynb
+.ipynb_checkpoints/

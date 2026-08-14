@@ -51,8 +51,6 @@ export interface HealthStatus {
   version: string
   models_loaded: {
     image_model: boolean
-    risk_model: boolean
-    fusion_model: boolean
   }
 }
 

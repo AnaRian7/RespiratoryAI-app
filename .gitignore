@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node / frontend
+node_modules/
+frontend/dist/
+
+# Data & models & uploads (do NOT push)
+data/
+saved_models/
+uploads/
+gradcam_outputs/
+backend/medical_ai.db
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.cursor/
+
+# Secrets
+*.env
+kaggle.json
+*.log
+
+# Dataset images (too large for GitHub)
+backend/datasets/processed/
+*.keras

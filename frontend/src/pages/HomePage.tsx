@@ -1,16 +1,12 @@
 import { useState } from 'react'
-import { Loader2, Scan, UserCog } from 'lucide-react'
+import { Loader2, Scan } from 'lucide-react'
 import XrayUploader from '../components/XrayUploader'
 import PredictionResult from '../components/PredictionResult'
-import RiskFactorForm from '../components/RiskFactorForm'
-import { predictImage, predictFull } from '../api/client'
-import type { PredictionResult as PredictionResultType, RiskFactors } from '../types'
-
-type AnalysisMode = 'image' | 'fusion'
+import { predictImage } from '../api/client'
+import type { PredictionResult as PredictionResultType } from '../types'
 
 export default function HomePage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [analysisMode, setAnalysisMode] = useState<AnalysisMode>('image')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<PredictionResultType | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -37,22 +33,6 @@ export default function HomePage() {
     }
   }
 
-  const handleFusionAnalysis = async (riskFactors: RiskFactors) => {
-    if (!selectedFile) return
-
-    setLoading(true)
-    setError(null)
-
-    try {
-      const prediction = await predictFull(selectedFile, riskFactors)
-      setResult(prediction)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Analysis failed. Please try again.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
   return (
     <div className="space-y-8">
       <div className="text-center">
@@ -60,36 +40,9 @@ export default function HomePage() {
           Chest X-Ray Analysis
         </h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          Upload a chest X-ray image to detect respiratory diseases including
-          COVID-19, Pneumonia, and Tuberculosis using our AI-powered analysis.
+          Upload a chest X-ray to classify COVID-19, Pneumonia, Tuberculosis, or Normal
+          using ResNet-50, with a Grad-CAM heatmap of the regions that drove the decision.
         </p>
-      </div>
-
-      <div className="flex justify-center">
-        <div className="inline-flex bg-gray-100 rounded-lg p-1">
-          <button
-            onClick={() => setAnalysisMode('image')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${
-              analysisMode === 'image'
-                ? 'bg-white shadow text-primary-600'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            <Scan className="w-4 h-4" />
-            Image Only
-          </button>
-          <button
-            onClick={() => setAnalysisMode('fusion')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${
-              analysisMode === 'fusion'
-                ? 'bg-white shadow text-primary-600'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            <UserCog className="w-4 h-4" />
-            With Risk Factors
-          </button>
-        </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-8">
@@ -101,7 +54,7 @@ export default function HomePage() {
             <XrayUploader onFileSelect={handleFileSelect} disabled={loading} />
           </div>
 
-          {analysisMode === 'image' && selectedFile && (
+          {selectedFile && (
             <button
               onClick={handleImageAnalysis}
               disabled={loading}
@@ -119,15 +72,6 @@ export default function HomePage() {
                 </>
               )}
             </button>
-          )}
-
-          {analysisMode === 'fusion' && selectedFile && (
-            <div className="card">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                Patient Risk Factors
-              </h2>
-              <RiskFactorForm onSubmit={handleFusionAnalysis} disabled={loading} />
-            </div>
           )}
 
           {error && (
@@ -155,7 +99,7 @@ export default function HomePage() {
               </div>
               <p className="text-gray-600 font-medium">No analysis yet</p>
               <p className="text-gray-500 text-sm mt-1">
-                Upload an X-ray image to get started
+                Upload an X-ray image to get a diagnostic report
               </p>
             </div>
           )}

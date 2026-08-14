@@ -18,7 +18,7 @@ from backend.config import settings
 
 
 class GradCAM:
-    """Generate Grad-CAM visualizations for ResNet50V2 predictions."""
+    """Generate Grad-CAM visualizations for ResNet-50 predictions."""
     
     def __init__(self, model: tf.keras.Model, layer_name: str = None):
         """

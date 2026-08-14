@@ -89,7 +89,7 @@ async def predict_xray(
     """
     Predict respiratory disease from chest X-ray image.
     
-    Analyzes the uploaded X-ray using the ResNet50V2 model and returns:
+    Analyzes the uploaded X-ray using the ResNet-50 model and returns:
     - Predicted disease class (COVID, NORMAL, PNEUMONIA, TUBERCULOSIS)
     - Confidence score
     - Probability distribution across all classes

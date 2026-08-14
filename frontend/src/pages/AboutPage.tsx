@@ -1,29 +1,29 @@
-import { Brain, Database, Shield, Zap } from 'lucide-react'
+import { Brain, Scan, Shield, LayoutDashboard } from 'lucide-react'
 
 const features = [
   {
     icon: Brain,
-    title: 'ResNet50V2 Architecture',
+    title: 'ResNet-50 Architecture',
     description:
-      'State-of-the-art deep learning model pre-trained on ImageNet, fine-tuned for chest X-ray classification.',
+      '50-layer residual CNN with skip connections, trained to classify chest X-rays into four respiratory classes.',
   },
   {
-    icon: Zap,
-    title: 'Real-time Analysis',
+    icon: Scan,
+    title: 'Four-Class Diagnosis',
     description:
-      'Get instant predictions with confidence scores and probability distributions across all disease classes.',
+      'COVID-19, Pneumonia, Tuberculosis, and Normal — the disease set described in the ICAIEHS 2025 paper.',
   },
   {
     icon: Shield,
     title: 'Grad-CAM Explainability',
     description:
-      'Visual heatmaps showing which regions of the X-ray most influenced the model\'s decision.',
+      'Heatmaps highlighting the X-ray regions that most influenced the predicted class.',
   },
   {
-    icon: Database,
-    title: 'Multi-Modal Fusion',
+    icon: LayoutDashboard,
+    title: 'Web Diagnostic Report',
     description:
-      'Combine X-ray analysis with patient risk factors for more accurate predictions.',
+      'Upload an image, receive the predicted class, confidence scores, and a Grad-CAM overlay in the browser.',
   },
 ]
 
@@ -40,8 +40,8 @@ export default function AboutPage() {
       <div className="text-center max-w-3xl mx-auto">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">About RespiratoryAI</h1>
         <p className="text-xl text-gray-600">
-          An AI-powered system for detecting respiratory diseases from chest X-ray images
-          using deep learning and computer vision.
+          An end-to-end deep learning system for detecting and classifying respiratory
+          diseases from chest X-ray images, following the ICAIEHS 2025 paper pipeline.
         </p>
       </div>
 
@@ -85,10 +85,10 @@ export default function AboutPage() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-2">Model Architecture</h3>
             <ul className="text-gray-600 space-y-2 text-sm">
-              <li>• Base: ResNet50V2 (pre-trained on ImageNet)</li>
-              <li>• Custom classification head with dropout</li>
-              <li>• Input size: 224 x 224 pixels</li>
-              <li>• Output: 4-class softmax probabilities</li>
+              <li>• Base: ResNet-50 (ImageNet pre-trained, residual blocks)</li>
+              <li>• Input: 224 × 224 × 3, softmax 4-class output</li>
+              <li>• Loss: categorical cross-entropy; Adam optimizer</li>
+              <li>• Explainability: Grad-CAM class activation maps</li>
             </ul>
           </div>
           <div>
@@ -96,8 +96,8 @@ export default function AboutPage() {
             <ul className="text-gray-600 space-y-2 text-sm">
               <li>• COVID-19 Radiography Database</li>
               <li>• Tuberculosis Chest X-ray Dataset</li>
-              <li>• RSNA Pneumonia Detection Challenge</li>
-              <li>• Class-balanced sampling with augmentation</li>
+              <li>• Chest X-ray Images (Pneumonia)</li>
+              <li>• Augmentation: rotation, zoom, horizontal flip</li>
             </ul>
           </div>
         </div>
@@ -112,30 +112,6 @@ export default function AboutPage() {
           a qualified healthcare provider for any medical concerns.
         </p>
       </section>
-
-      <section className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Technology Stack</h2>
-        <div className="flex flex-wrap justify-center gap-3">
-          {[
-            'Python',
-            'TensorFlow',
-            'FastAPI',
-            'React',
-            'TypeScript',
-            'Tailwind CSS',
-            'SQLite',
-          ].map((tech) => (
-            <span
-              key={tech}
-              className="px-4 py-2 bg-gray-100 rounded-full text-gray-700 font-medium"
-            >
-              {tech}
-            </span>
-          ))}
-        </div>
-      </section>
     </div>
   )
 }
-
-

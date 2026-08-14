@@ -17,11 +17,11 @@ from backend.config import settings
 
 
 def train_image_model(fine_tune: bool = False):
-    """Train the ResNet50V2 image classification model."""
+    """Train the ResNet-50 image classification model."""
     from backend.models.image_model import train_image_model as _train
     
     print("\n" + "="*70)
-    print("TRAINING: ResNet50V2 Chest X-Ray Classifier")
+    print("TRAINING: ResNet-50 Chest X-Ray Classifier")
     print("="*70)
     
     history, metrics = _train(fine_tune=fine_tune)

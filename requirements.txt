@@ -24,6 +24,5 @@ kaggle>=1.5.0
 # Development
 python-dotenv>=1.0.0
 
-#Libraries
+# HTTP client for downloading models
 requests>=2.31.0
-

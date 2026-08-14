@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 from sklearn.utils.class_weight import compute_class_weight
 
-from tensorflow.keras.applications import ResNet50V2
+from tensorflow.keras.applications import ResNet50
 from tensorflow.keras.layers import (
     Dense, GlobalAveragePooling2D, Dropout, BatchNormalization
 )
@@ -18,7 +18,7 @@ from backend.config import settings
 
 def build_image_model(freeze_base: bool = True):
     """
-    Build ResNet50V2-based image classification model for chest X-rays.
+    Build ResNet-50 image classification model for chest X-rays (paper architecture).
     
     Args:
         freeze_base: If True, freeze early layers for transfer learning.
@@ -26,7 +26,7 @@ def build_image_model(freeze_base: bool = True):
     Returns:
         Compiled Keras model.
     """
-    base = ResNet50V2(
+    base = ResNet50(
         weights="imagenet",
         include_top=False,
         input_shape=(*settings.IMAGE_SIZE, 3)
@@ -53,7 +53,7 @@ def build_image_model(freeze_base: bool = True):
         name="predictions"
     )(x)
 
-    model = Model(inputs=base.input, outputs=output, name="ResNet50V2_ChestXray")
+    model = Model(inputs=base.input, outputs=output, name="ResNet50_ChestXray")
 
     model.compile(
         optimizer=Adam(learning_rate=settings.LEARNING_RATE),
@@ -97,7 +97,7 @@ def get_callbacks():
 
 def train_image_model(fine_tune: bool = False):
     """
-    Train the ResNet50V2 image model on chest X-ray data.
+    Train the ResNet-50 image model on chest X-ray data.
     
     Args:
         fine_tune: If True, unfreeze more layers for fine-tuning (use after initial training).
@@ -110,7 +110,7 @@ def train_image_model(fine_tune: bool = False):
     print("\n" + "="*60)
     print("CHEST X-RAY CLASSIFICATION - TRAINING")
     print("="*60)
-    print(f"\nModel: ResNet50V2")
+    print(f"\nModel: ResNet-50")
     print(f"Image size: {settings.IMAGE_SIZE}")
     print(f"Classes: {settings.CLASSES}")
     print(f"Epochs: {settings.EPOCHS}")
